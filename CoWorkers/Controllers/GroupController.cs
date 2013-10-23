@@ -28,5 +28,35 @@ namespace CoWorkers.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<ActionResult> Create(ZoombuViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                using (Service1Client service = new Service1Client())
+                {
+                    // Get user connected
+                    idUser = Convert.ToInt32(HttpContext.User.Identity.Name);
+
+                    Group groupTmp = viewModel.Group;
+                    groupTmp.UserOwnerId = idUser;
+                    if (await service.CreateGroupAsync(groupTmp) != -1)
+                    {
+                        //Redirect
+                        previousPage = "../Home/";
+                        return RedirectToAction(previousPage);
+                    }
+                    else
+                    {
+                        return RedirectToAction("Create", "Group");
+                    }
+                }
+            }
+            else
+            {
+                return View(viewModel);
+            }
+        }
+
     }
 }
