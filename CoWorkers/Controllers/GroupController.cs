@@ -15,5 +15,18 @@ namespace CoWorkers.Controllers
         public static String previousPage;
         public static int idUser = 0;
 
+        public async Task<ActionResult> Create()
+        {
+            using (Service1Client service = new Service1Client())
+            {
+                idUser = Convert.ToInt32(HttpContext.User.Identity.Name);
+                return View(new ZoombuViewModel
+                {
+                    User = await service.GetUserByIdAsync(idUser),
+                    Group = new Group()
+                });
+            }
+        }
+
     }
 }
